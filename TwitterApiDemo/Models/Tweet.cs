@@ -19,17 +19,23 @@ namespace TwitterApiDemo.Models
         public const String JSON_KEY_NAME = "name";
         public const String JSON_KEY_SCREEN_NAME = "screen_name";
         public const String JSON_KEY_PROFILE_IMAGE_URL = "profile_image_url_https";
-        public const String JSON_KEY_BACKGROUND_COLOR = "profile_background_color";
 
+        // For getting all hashtags
+        public const String JSON_KEY_ENTITIES = "entities";
+        public const String JSON_KEY_HASHTAGS = "hashtags";
+        public const String JSON_KEY_HASHTAG_TEXT = "text";
+
+        // when displaying hashtags, it gets ugly if we try to display too many.
+        private const int MAX_TAGS = 3;
         // Model's members
         private String tweetID;
         private String name;
         private String screenName;
         private String profileImageUrl;
-        private String backgroundColor;
         private String message;
         private String timeStamp;
         private int retweetCount;
+        private List<String> tags;
         
         public Tweet (JObject statusJson)
         {
@@ -43,7 +49,21 @@ namespace TwitterApiDemo.Models
             name            = (String) user.GetValue(JSON_KEY_NAME);
             screenName      = (String) user.GetValue(JSON_KEY_SCREEN_NAME);
             profileImageUrl = (String) user.GetValue(JSON_KEY_PROFILE_IMAGE_URL);
-            backgroundColor = (String) user.GetValue(JSON_KEY_BACKGROUND_COLOR);
+
+            tags = new List<String>();
+
+            JObject entities= (JObject)statusJson.GetValue(JSON_KEY_ENTITIES);
+            JArray tagsArray= (JArray)entities.GetValue(JSON_KEY_HASHTAGS);
+
+            foreach(JObject tag in tagsArray)
+            {
+                String newTag = (String)tag.GetValue(JSON_KEY_HASHTAG_TEXT);
+                if (!tags.Contains(newTag) && tags.Count < MAX_TAGS)
+                {
+                    tags.Add(newTag);
+                }
+            }
+
         }
 
         public override string ToString()
@@ -53,7 +73,6 @@ namespace TwitterApiDemo.Models
             output += "Name: " + name + "\n";
             output += "screenName: " + screenName + "\n";
             output += "profileImageUrl: " + profileImageUrl + "\n";
-            output += "backgroundColor: " + backgroundColor + "\n";
             output += "message: " + message + "\n";
             output += "timeStamp: " + timeStamp + "\n";
             output += "retweetCount: " + retweetCount + "\n";
@@ -63,6 +82,12 @@ namespace TwitterApiDemo.Models
         public String getLikeTweetUrl()
         {
             return "https://twitter.com/intent/like?tweet_id=" + tweetID;
+        }
+
+        public String getRetweetUrl()
+        {
+            return "https://twitter.com/intent/retweet?tweet_id=" + tweetID;
+
         }
 
         // Getters
@@ -76,15 +101,11 @@ namespace TwitterApiDemo.Models
         }
         public String getScreenName()
         {
-            return screenName;
+            return "@" + screenName;
         }
         public String getProfileImageUrl()
         {
             return profileImageUrl;
-        }
-        public String getBackgroundColor()
-        {
-            return backgroundColor;
         }
         public String getMessage()
         {
@@ -98,5 +119,10 @@ namespace TwitterApiDemo.Models
         {
             return retweetCount;
         }
+        public List<String> getTags()
+        {
+            return tags;
+        }
+        
     }
 }

@@ -1,12 +1,11 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Twitter/_Layout-search.cshtml";
 }
 
 @{
     ViewBag.Title = "Twitter Api Demo";
 }
 
-<h2>Search</h2>
 
 <div class="row">
 
@@ -14,29 +13,50 @@
         {
             if (!string.IsNullOrEmpty(ViewData["tweets"].ToString()))
             {
+
+                <h2> Search Results</h2>
                 foreach (TwitterApiDemo.Models.Tweet tweet in ViewData["tweets"] as IList<TwitterApiDemo.Models.Tweet>)
                 {
+                    <div class="card-container card col-sm-12 col-md-6 col-lg-4">
+                        <div class="tweet-card">
+                            <div class="card-block">
+                                <img class="profile-icon rounded-circle" src="@tweet.getProfileImageUrl()" />
+                            </div>
 
-                    <div class="card col-sm-12 col-md-6 col-lg-4 tweet-card" style="border-color: #@tweet.getBackgroundColor();">
-                        <div class="card-block">
-                            <img class="profile-icon rounded-circle" src="@tweet.getProfileImageUrl()" />
+                            <h4 class="name">@tweet.getName()</h4>
+
+                            <h4 class="screen-name">@tweet.getScreenName()</h4>
+
+                            <a href="@tweet.getRetweetUrl()" class="btn btn-success retweet-button">
+                                <span class="glyphicon glyphicon-retweet"></span> @tweet.getRetweetCount()
+                            </a>
+                            <a href="@tweet.getLikeTweetUrl()" class="btn btn-danger like-button">
+                                <span class="glyphicon glyphicon-heart"></span> Like
+                            </a>
+
+                            <p>@tweet.getMessage()</p>
+
+                            <div class="row badge-holder">
+                            @foreach (String tag in @tweet.getTags())
+                            {
+                                <a href="/Twitter?tag=@tag">
+                                    <span class="badge badge-pill badge-default">@tag</span>
+                                </a>
+                            }
+                            </div>
+                            <h6 class="timestamp">@tweet.getTimeStamp()</h6>
                         </div>
-
-                        <h5 class="name">@tweet.getName()</h5>
-
-                        <h5 class="screen-name">@tweet.getScreenName()</h5>
-
-                        <a class="btn retweet-button">
-                            <span class="glyphicon glyphicon-retweet"></span> @tweet.getRetweetCount()
-                        </a>
-                        <a href="@tweet.getLikeTweetUrl()" class="btn btn-danger like-button">
-                            <span class="glyphicon glyphicon-heart"></span> Like
-                        </a>
-
-                        <p>@tweet.getMessage()</p>
                     </div>
                 }
             }
+            else
+            {
+                <h2> Please Search for a Hashtag in the Search Bar Above</h2>
+            }
+        }
+        else
+        {
+            <h2> Please Search for a Hashtag in the Search Bar Above</h2>
         }
     }
 </div>
