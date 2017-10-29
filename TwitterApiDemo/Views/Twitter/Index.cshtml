@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Twitter Api Demo";
+}
+
+<h2>Search</h2>
+
+<div class="row">
+
+    @{ if (ViewData["tweets"] != null)
+        {
+            if (!string.IsNullOrEmpty(ViewData["tweets"].ToString()))
+            {
+                foreach (TwitterApiDemo.Models.Tweet tweet in ViewData["tweets"] as IList<TwitterApiDemo.Models.Tweet>)
+                {
+
+                    <div class="card col-sm-12 col-md-6 col-lg-4 tweet-card" style="border-color: #@tweet.getBackgroundColor();">
+                        <div class="card-block">
+                            <img class="profile-icon rounded-circle" src="@tweet.getProfileImageUrl()" />
+                        </div>
+
+                        <h5 class="name">@tweet.getName()</h5>
+
+                        <h5 class="screen-name">@tweet.getScreenName()</h5>
+
+                        <a class="btn retweet-button">
+                            <span class="glyphicon glyphicon-retweet"></span> @tweet.getRetweetCount()
+                        </a>
+                        <a href="@tweet.getLikeTweetUrl()" class="btn btn-danger like-button">
+                            <span class="glyphicon glyphicon-heart"></span> Like
+                        </a>
+
+                        <p>@tweet.getMessage()</p>
+                    </div>
+                }
+            }
+        }
+    }
+</div>
