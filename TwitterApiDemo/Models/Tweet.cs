@@ -13,6 +13,7 @@ namespace TwitterApiDemo.Models
         public const String JSON_KEY_MESSAGE = "text";
         public const String JSON_KEY_TIME_STAMP = "created_at";
         public const String JSON_KEY_RETWEET_COUNT = "retweet_count";
+        public const String JSON_KEY_FAVORITE_COUNT = "favorite_count";
         public const String JSON_KEY_USER = "user";
 
         // The following are found inside the "user" JSON
@@ -35,6 +36,7 @@ namespace TwitterApiDemo.Models
         private String message;
         private String timeStamp;
         private int retweetCount;
+        private int favoriteCount;
         private List<String> tags;
         
         public Tweet (JObject statusJson)
@@ -42,7 +44,8 @@ namespace TwitterApiDemo.Models
             tweetID         = (String) statusJson.GetValue(JSON_KEY_ID);
             message         = (String) statusJson.GetValue(JSON_KEY_MESSAGE);
             timeStamp       = (String) statusJson.GetValue(JSON_KEY_TIME_STAMP);
-            retweetCount    = (int) statusJson.GetValue(JSON_KEY_RETWEET_COUNT);
+            retweetCount    = (int)statusJson.GetValue(JSON_KEY_RETWEET_COUNT);
+            favoriteCount   = (int)statusJson.GetValue(JSON_KEY_FAVORITE_COUNT);
 
             JObject user    = (JObject)statusJson.GetValue(JSON_KEY_USER);
             
@@ -76,6 +79,7 @@ namespace TwitterApiDemo.Models
             output += "message: " + message + "\n";
             output += "timeStamp: " + timeStamp + "\n";
             output += "retweetCount: " + retweetCount + "\n";
+            output += "FavoriteCount: " + favoriteCount + "\n";
             return output;
         }
 
@@ -118,6 +122,10 @@ namespace TwitterApiDemo.Models
         public int getRetweetCount()
         {
             return retweetCount;
+        }
+        public int getFavoriteCount()
+        {
+            return favoriteCount;
         }
         public List<String> getTags()
         {

@@ -39,8 +39,17 @@ namespace TwitterApiDemo.Controllers
                 if (!String.IsNullOrEmpty(token))
                 {
                     List<Tweet> tweets = searchTweets(tag);
-                    
-                    ViewData["tweets"] = tweets;
+
+                    if(tweets.Count > 0)
+                    {
+                        ViewBag.Message = "Search Results for: " + tag;
+
+                        ViewData["tweets"] = tweets;
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Could not find tweets with: " + tag;
+                    }
 
                 }
                 else
@@ -48,6 +57,10 @@ namespace TwitterApiDemo.Controllers
                     ViewBag.Message = "Error finding authorization token";
                 }
 
+            }
+            else
+            {
+                ViewBag.Message = "Please Search for a Hashtag in the Search Bar Above";
             }
             return View();
         }

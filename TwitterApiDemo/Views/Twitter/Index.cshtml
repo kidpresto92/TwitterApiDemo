@@ -7,6 +7,15 @@
 }
 
 
+@{
+    <h2>
+        @ViewBag.Message
+    </h2>
+}
+
+<script type="text/javascript" src="~/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="~/scripts/datatables.min.js"></script>
+
 <div class="row">
 
     @{ if (ViewData["tweets"] != null)
@@ -14,49 +23,60 @@
             if (!string.IsNullOrEmpty(ViewData["tweets"].ToString()))
             {
 
-                <h2> Search Results</h2>
-                foreach (TwitterApiDemo.Models.Tweet tweet in ViewData["tweets"] as IList<TwitterApiDemo.Models.Tweet>)
-                {
-                    <div class="card-container card col-sm-12 col-md-6 col-lg-4">
-                        <div class="tweet-card">
-                            <div class="card-block">
-                                <img class="profile-icon rounded-circle" src="@tweet.getProfileImageUrl()" />
-                            </div>
+                <table id="tweetsTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Tweets</th>
+                        </tr>
+                    </thead>
 
-                            <h4 class="name">@tweet.getName()</h4>
-
-                            <h4 class="screen-name">@tweet.getScreenName()</h4>
-
-                            <a href="@tweet.getRetweetUrl()" class="btn btn-success retweet-button">
-                                <span class="glyphicon glyphicon-retweet"></span> @tweet.getRetweetCount()
-                            </a>
-                            <a href="@tweet.getLikeTweetUrl()" class="btn btn-danger like-button">
-                                <span class="glyphicon glyphicon-heart"></span> Like
-                            </a>
-
-                            <p>@tweet.getMessage()</p>
-
-                            <div class="row badge-holder">
-                            @foreach (String tag in @tweet.getTags())
+                    <tbody>
+                        @{
+                            foreach (TwitterApiDemo.Models.Tweet tweet in ViewData["tweets"] as IList
+                        <TwitterApiDemo.Models.Tweet>)
                             {
-                                <a href="/Twitter?tag=@tag">
-                                    <span class="badge badge-pill badge-default">@tag</span>
-                                </a>
+                                <tr>
+                                    <td>
+
+                                        <div class="card-container card col-sm-12">
+                                            <div class="tweet-card">
+                                                <div class="card-block">
+                                                    <img class="profile-icon" src="@tweet.getProfileImageUrl()" />
+                                                </div>
+
+                                                <h4 class="name">@tweet.getName()</h4>
+
+                                                <h4 class="screen-name">@tweet.getScreenName()</h4>
+
+                                                <a href="@tweet.getRetweetUrl()" class="btn btn-success retweet-button">
+                                                    <span class="glyphicon glyphicon-retweet"></span> @tweet.getRetweetCount()
+                                                </a>
+                                                <a href="@tweet.getLikeTweetUrl()" class="btn btn-danger like-button">
+                                                    <span class="glyphicon glyphicon-heart"></span> @tweet.getFavoriteCount()
+                                                </a>
+
+                                                <p class="message">@tweet.getMessage()</p>
+
+                                                <h6 class="timestamp">@tweet.getTimeStamp()</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                 </tr>
                             }
-                            </div>
-                            <h6 class="timestamp">@tweet.getTimeStamp()</h6>
-                        </div>
-                    </div>
-                }
+                        }
+</tbody>
+</table>
             }
-            else
-            {
-                <h2> Please Search for a Hashtag in the Search Bar Above</h2>
-            }
-        }
-        else
-        {
-            <h2> Please Search for a Hashtag in the Search Bar Above</h2>
         }
     }
+    <script>
+        $(document).ready(function () {
+            $('#tweetsTable').DataTable({
+                "paging": true,
+                "ordering": false,
+                "info": false
+            });
+        });
+    </script>
 </div>
+
